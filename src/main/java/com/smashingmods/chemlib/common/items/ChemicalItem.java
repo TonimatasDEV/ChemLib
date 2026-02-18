@@ -95,7 +95,7 @@ public class ChemicalItem extends Item implements Chemical {
 
     @Override
     public int getColor() {
-        return clampMinColorValue(chemical.getColor(), 0x44);
+        return chemical.getColor();
     }
 
     @SuppressWarnings("unused")
