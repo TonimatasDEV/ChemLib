@@ -59,12 +59,12 @@ neoForge {
 
         create("data") {
             data()
-            programArguments.addAll("--mod", "chemlib", "--all", "--output", file("src/generated/resources/").getAbsolutePath(), "--existing", file("src/main/resources/").getAbsolutePath())
+            programArguments.addAll("--mod", "chemlib", "--all", "--output", file("src/generated/resources/").absolutePath, "--existing", file("src/main/resources/").absolutePath)
         }
 
         configureEach {
             systemProperty("forge.logging.markers", "REGISTRIES")
-            logLevel = org.slf4j.event.Level.DEBUG
+            logLevel = org.slf4j.event.Level.INFO
         }
     }
 
@@ -87,22 +87,18 @@ dependencies {
     localRuntime("mezz.jei:jei-$minecraftVersion-neoforge:${jeiVersion}")
 }
 
-
-var generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {
+tasks.processResources {
     var replaceProperties = mapOf("minecraftVersion" to minecraftVersion, "neoVersion" to neoVersion,
         "neoforgeVersionRange" to neoforgeVersionRange, "modVersion" to modVersion
     )
-    
+
     inputs.properties(replaceProperties)
-    expand(replaceProperties)
     
-    from("src/main/templates")
-    into("build/generated/sources/modMetadata")
+    filesMatching(listOf("META-INF/neoforge.mods.toml")) {
+        expand(replaceProperties)
+    }
 }
 
-sourceSets.main.get().resources.srcDir(generateModMetadata)
-
-neoForge.ideSyncTask(generateModMetadata)
 /*
 publishing {
     publications {
@@ -127,11 +123,6 @@ idea {
         isDownloadJavadoc = true
     }
 }
-
-
-
-
-
 
 /*
 publishing {

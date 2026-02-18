@@ -28,7 +28,7 @@ public class FluidEffectsTooltipUtility {
     public static List<Component> getBucketEffectTooltipComponents(ItemStack pStack) {
         List<Component> componentList = new ArrayList<>();
 
-        BuiltInRegistries.FLUID.getResourceKey(((BucketItem) pStack.getItem()).getFluid()).ifPresent(fluidResourceKey -> {
+        BuiltInRegistries.FLUID.getResourceKey(((BucketItem) pStack.getItem()).content).ifPresent(fluidResourceKey -> {
             String chemicalName = StringUtils.removeEnd(fluidResourceKey.location().getPath(), "_fluid");
             AtomicReference<List<MobEffectInstance>> effectList = new AtomicReference<>();
             ItemRegistry.getElementByName(chemicalName).ifPresent(element -> effectList.set(element.getEffects()));
@@ -45,6 +45,7 @@ public class FluidEffectsTooltipUtility {
             pTooltips.add(MutableComponent.create(new TranslatableContents("chemlib.effect.on_hit", null, TranslatableContents.NO_ARGS)).withStyle(ChatFormatting.UNDERLINE).append(":"));
             pTooltips.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
         } else {
+            /* TODO
             pTooltips.add(MutableComponent.create(new PlainTextContents.LiteralContents(" ")));
             pTooltips.add(MutableComponent.create(new TranslatableContents("chemlib.effect.on_hit", null, TranslatableContents.NO_ARGS)).withStyle(ChatFormatting.UNDERLINE).append(":"));
             for (MobEffectInstance effectInstance : pEffects) {
@@ -95,6 +96,7 @@ public class FluidEffectsTooltipUtility {
                             .withStyle(ChatFormatting.RED));
                 }
             }
+             */
         }
     }
 }

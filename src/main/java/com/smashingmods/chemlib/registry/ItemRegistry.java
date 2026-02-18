@@ -145,11 +145,11 @@ public class ItemRegistry {
         return pRegister.getEntries().stream().filter(item -> item.getId().getPath().equals(pName)).findFirst().get();
     }
 
-    public static <B extends Block> void fromChemicalBlock(DeferredHolder<B, ?> pBlock, Item.Properties pProperties) {
+    public static <B extends Block> void fromChemicalBlock(DeferredHolder<B, ? extends B> pBlock, Item.Properties pProperties) {
         REGISTRY_BLOCK_ITEMS.register(pBlock.getId().getPath(), () -> new ChemicalBlockItem((ChemicalBlock) pBlock.get(), pProperties));
     }
 
-    public static <B extends Block> void fromBlock(DeferredHolder<B, ?> pBlock, Item.Properties pProperties) {
+    public static <B extends Block> void fromBlock(DeferredHolder<B, ? extends B> pBlock, Item.Properties pProperties) {
         REGISTRY_BLOCK_ITEMS.register(pBlock.getId().getPath(), () -> new BlockItem(pBlock.get(), pProperties));
     }
 

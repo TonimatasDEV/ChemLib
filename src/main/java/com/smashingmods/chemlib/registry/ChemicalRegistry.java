@@ -145,7 +145,7 @@ public class ChemicalRegistry {
                 String effectLocation = effectObject.get("location").getAsString();
                 int effectDuration = effectObject.get("duration").getAsInt();
                 int effectAmplifier = effectObject.get("amplifier").getAsInt();
-                MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.withDefaultNamespace(effectLocation));
+                MobEffect mobEffect = BuiltInRegistries.MOB_EFFECT.get(ResourceLocation.parse(effectLocation));
                 if (mobEffect != null) {
                     effectsList.add(new MobEffectInstance(Holder.direct(mobEffect), effectDuration, effectAmplifier));
                 }
