@@ -11,6 +11,9 @@ val neoVersion: String by extra
 val parchmentMappingsVersion: String by extra
 val parchmentMinecraftVersion: String by extra
 val neoforgeVersionRange: String by extra
+val jeiVersion: String by extra
+
+val localRuntime: Configuration by configurations.creating
 
 tasks.wrapper {
     distributionType = Wrapper.DistributionType.BIN
@@ -20,7 +23,7 @@ version = modVersion
 group = "com.smashingmods.chemlib"
 
 repositories {
-    
+    maven("https://maven.blamejared.com/")
 }
 
 base {
@@ -74,8 +77,14 @@ neoForge {
 
 sourceSets.main.get().resources { srcDir("src/generated/resources") }
 
-dependencies {
+configurations {
+    runtimeClasspath.get().extendsFrom(localRuntime)
+}
 
+dependencies {
+    compileOnly("mezz.jei:jei-$minecraftVersion-common-api:${jeiVersion}")
+    compileOnly("mezz.jei:jei-$minecraftVersion-neoforge-api:${jeiVersion}")
+    localRuntime("mezz.jei:jei-$minecraftVersion-neoforge:${jeiVersion}")
 }
 
 
@@ -125,47 +134,6 @@ idea {
 
 
 /*
-plugins {
-    id "java"
-    id "idea"
-    id "net.minecraftforge.gradle" version "[6.0,6.2)"
-    id "org.parchmentmc.librarian.forgegradle" version "1.+"
-    id "com.matthewprenger.cursegradle" version "1.4.0"
-}
-
-apply plugin: "net.minecraftforge.gradle"
-apply plugin: "org.parchmentmc.librarian.forgegradle"
-apply plugin: "maven-publish"
-
-repositories {
-    maven { url "https://maven.blamejared.com/" }
-    maven {
-        url "https://www.cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-}
-
-dependencies {
-    implementation fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${jei_version}")
-}
-
-def secrets = new Properties()
-file("secrets.properties").withInputStream {
-    stream -> secrets.load(stream)
-}
-
-fileTree("secrets").matching {
-    include "** /*.properties"
-}.each {
-    File file ->
-        file.withInputStream {
-            stream -> secrets.load(stream)
-        }
-}
-
 publishing {
     publications {
         mavenJava(MavenPublication) {
@@ -188,24 +156,4 @@ publishing {
         }
     }
 }
-
-curseforge {
-    apiKey = secrets.getProperty("apiKey")
-    project {
-        id = "340666"
-        releaseType = "release"
-        changelogType = "markdown"
-        changelog = file("changelog.md")
-        addGameVersion "Forge"
-        addGameVersion "Java 17"
-        addGameVersion "$minecraft_version"
-        mainArtifact(jar) {
-            displayName = "ChemLib $version"
-            relations {
-                optionalDependency "jei"
-            }
-        }
-    }
-}
-
  */

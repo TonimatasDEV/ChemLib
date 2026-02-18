@@ -3,9 +3,10 @@ package com.smashingmods.chemlib.api.utility;
 import com.google.common.collect.Lists;
 import com.smashingmods.chemlib.registry.ItemRegistry;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -14,7 +15,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -28,7 +28,7 @@ public class FluidEffectsTooltipUtility {
     public static List<Component> getBucketEffectTooltipComponents(ItemStack pStack) {
         List<Component> componentList = new ArrayList<>();
 
-        ForgeRegistries.FLUIDS.getResourceKey(((BucketItem) pStack.getItem()).getFluid()).ifPresent(fluidResourceKey -> {
+        BuiltInRegistries.FLUID.getResourceKey(((BucketItem) pStack.getItem()).getFluid()).ifPresent(fluidResourceKey -> {
             String chemicalName = StringUtils.removeEnd(fluidResourceKey.location().getPath(), "_fluid");
             AtomicReference<List<MobEffectInstance>> effectList = new AtomicReference<>();
             ItemRegistry.getElementByName(chemicalName).ifPresent(element -> effectList.set(element.getEffects()));
@@ -41,16 +41,16 @@ public class FluidEffectsTooltipUtility {
     public static void addTooltipEffects(List<MobEffectInstance> pEffects, List<Component> pTooltips) {
         List<Pair<Attribute, AttributeModifier>> attributeModifierPairList = Lists.newArrayList();
         if (pEffects.isEmpty()) {
-            pTooltips.add(MutableComponent.create(new LiteralContents(" ")));
+            pTooltips.add(MutableComponent.create(new PlainTextContents.LiteralContents(" ")));
             pTooltips.add(MutableComponent.create(new TranslatableContents("chemlib.effect.on_hit", null, TranslatableContents.NO_ARGS)).withStyle(ChatFormatting.UNDERLINE).append(":"));
             pTooltips.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
         } else {
-            pTooltips.add(MutableComponent.create(new LiteralContents(" ")));
+            pTooltips.add(MutableComponent.create(new PlainTextContents.LiteralContents(" ")));
             pTooltips.add(MutableComponent.create(new TranslatableContents("chemlib.effect.on_hit", null, TranslatableContents.NO_ARGS)).withStyle(ChatFormatting.UNDERLINE).append(":"));
             for (MobEffectInstance effectInstance : pEffects) {
                 MutableComponent mutableComponent = Component.translatable(effectInstance.getDescriptionId());
-                MobEffect effect = effectInstance.getEffect();
-                Map<Attribute, AttributeModifier> attributeModifierMap = effect.getAttributeModifiers();
+                MobEffect effect = effectInstance.getEffect().value();
+                Map<Attribute, AttributeModifier> attributeModifierMap = effect.addAttributeModifier();
 
                 if (!attributeModifierMap.isEmpty()) {
                     for (Map.Entry<Attribute, AttributeModifier> attributeModifierEntry : attributeModifierMap.entrySet()) {
