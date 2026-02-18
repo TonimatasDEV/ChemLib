@@ -78,7 +78,7 @@ public class FluidRegistry {
 
         DeferredHolder<Fluid, BaseFlowingFluid.Source> fluidSource = FLUIDS.register(String.format("%s_fluid", pName), () -> new BaseFlowingFluid.Source(ref.properties));
         DeferredHolder<Fluid, BaseFlowingFluid.Flowing> fluidFlowing = FLUIDS.register(String.format("%s_flowing", pName), () -> new BaseFlowingFluid.Flowing(ref.properties));
-        DeferredBlock<ChemicalLiquidBlock> liquidBlock = LIQUID_BLOCKS.register(pName, () -> new ChemicalLiquidBlock(fluidSource, pName));
+        DeferredBlock<ChemicalLiquidBlock> liquidBlock = LIQUID_BLOCKS.register(pName, () -> new ChemicalLiquidBlock(fluidSource.get(), pName));
         DeferredHolder<Item, ?> bucket = BUCKETS.register(String.format("%s_bucket", pName), () -> new BucketItem(fluidSource.get(), new Item.Properties().stacksTo(1)));
 
         ref.properties = new BaseFlowingFluid.Properties(fluidType, fluidSource, fluidFlowing)
